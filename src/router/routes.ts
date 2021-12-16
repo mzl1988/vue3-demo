@@ -20,11 +20,11 @@ export const frameIn: Array<RouteRecordRaw> = [
         },
       },
       {
-        path: 'CKEditor',
-        name: 'CKEditor',
-        component: () => import('@/views/CKEditor/index.vue'),
+        path: 'TermsAndConditions',
+        name: 'TermsAndConditions',
+        component: () => import('@/views/TermsAndConditions/index.vue'),
         meta: {
-          title: 'CKEditor',
+          title: 'TermsAndConditions',
           // keepAlive: true,
         },
       },

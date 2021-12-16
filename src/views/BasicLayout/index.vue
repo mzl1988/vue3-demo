@@ -16,19 +16,17 @@
                             <a-menu-item>1st menu item</a-menu-item>
                             <a-menu-item>1st menu item</a-menu-item>
                             <a-menu-divider />
-                            <a-menu-item>1st menu item</a-menu-item>
+                            <a-menu-item @click="signOut()">
+                                <LogoutOutlined />
+                                <span class="ml-2">Sign out</span>
+                            </a-menu-item>
                         </a-menu>
                     </template>
                 </a-dropdown>
             </div>
         </a-layout-header>
         <a-layout>
-            <a-layout-sider
-                :style="{ width: '200px', height: '100vh', position: 'fixed', zIndex: 1, overflow: 'auto', paddingTop: '64px' }"
-                v-model:collapsed="collapsed"
-                collapsible
-                theme="light"
-            >
+            <a-layout-sider v-model:collapsed="collapsed" collapsible theme="light" width="240">
                 <a-menu
                     v-model:selectedKeys="selectedKeys"
                     v-model:openKeys="openKeys"
@@ -53,7 +51,7 @@
             </a-layout-sider>
             <a-layout
                 style="padding: 0 24px 24px; margin-top: 64px;"
-                :style="{ marginLeft: collapsed ? '80px' : '200px' }"
+                :style="{ marginLeft: collapsed ? '80px' : '240px' }"
             >
                 <router-view v-slot="{ Component, route }">
                     <keep-alive>
@@ -73,14 +71,19 @@ import { onMounted, reactive, toRefs, watch } from "vue"
 import SubMenu from '@/components/SubMenu.vue'
 import {
     PieChartOutlined,
+    LogoutOutlined
 } from '@ant-design/icons-vue';
 import { useRouter } from 'vue-router'
 import _ from 'lodash'
 import { useWindowResize } from "@/hooks"
-const { width, height } = useWindowResize()
+const { width } = useWindowResize()
 const router = useRouter()
+import { useUserStore } from '@/stores/user'
+const userStore = useUserStore()
 
-
+const signOut = () => {
+    userStore.logout()
+}
 const handleClick = (e: any) => {
     findActiveRouter(e.key, data.list, null, true,)
 };
@@ -135,8 +138,8 @@ const data: Data = reactive({
             icon: PieChartOutlined,
         },
         {
-            key: 'CKEditor',
-            title: 'CKEditor',
+            key: 'TermsAndConditions',
+            title: 'Terms And Conditions',
             icon: PieChartOutlined,
         },
         {
@@ -192,6 +195,14 @@ const { list, openKeys, selectedKeys, collapsed } = { ...toRefs(data) }
 
 .site-layout-background {
     background: #fff;
+}
+
+.ant-layout-sider {
+    height: 100vh;
+    position: fixed;
+    z-index: 1;
+    overflow: auto;
+    padding-top: 64px;
 }
 
 /deep/ .ant-layout-sider-trigger {
