@@ -8,7 +8,7 @@ const createElement = () => {
   return el;
 };
 
-const useClipboard = (): useClipboardResult => {
+export const useClipboard = (): useClipboardResult => {
   const el = createElement();
   const copyText = (text?: string) => {
     if (!text) return;
@@ -32,4 +32,3 @@ const useClipboard = (): useClipboardResult => {
   return { copyText };
 };
 
-export default useClipboard;

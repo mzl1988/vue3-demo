@@ -25,6 +25,7 @@ export const frameIn: Array<RouteRecordRaw> = [
         component: () => import('@/views/CKEditor/index.vue'),
         meta: {
           title: 'CKEditor',
+          // keepAlive: true,
         },
       },
     ],

@@ -3,7 +3,7 @@ import storage from 'store';
 
 const { VITE_APP_BASE_URL } = import.meta.env;
 
-const request = axios.create({
+const instance = axios.create({
   // API 请求的默认前缀
   baseURL: VITE_APP_BASE_URL as string,
   timeout: 10000, // 请求超时时间
@@ -53,7 +53,7 @@ const errorHandler = (error: AxiosError) => {
   return Promise.reject(error);
 };
 
-request.interceptors.request.use((config) => {
+instance.interceptors.request.use((config) => {
   // 如果 token 存在
   // 让每个请求携带自定义 token 请根据实际情况自行修改
   config.headers.Authorization = `bearer ${storage.get('ACCESS_TOKEN')}`;
@@ -61,7 +61,7 @@ request.interceptors.request.use((config) => {
 }, errorHandler);
 
 // response interceptor
-request.interceptors.response.use((response) => {
+instance.interceptors.response.use((response) => {
   const dataAxios = response.data;
   // 这个状态码是和后端约定的
   const { code } = dataAxios;
@@ -84,4 +84,4 @@ request.interceptors.response.use((response) => {
   }
 }, errorHandler);
 
-export default request;
+export const request = instance;

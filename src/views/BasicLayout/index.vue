@@ -1,68 +1,83 @@
 <template>
     <a-layout>
-        <a-layout-sider
-            v-model:collapsed="collapsed"
-            :trigger="null"
-            collapsible
-            :style="{ overflow: 'auto', height: '100vh', position: 'fixed', left: 0 }"
-        >
+        <a-layout-header :style="{ position: 'fixed', zIndex: 2, width: '100%', padding: 0 }">
             <div class="logo" />
-            <a-menu
-                v-model:openKeys="openKeys"
-                v-model:selectedKeys="selectedKeys"
-                mode="inline"
-                theme="dark"
-                @click="handleClick"
-            >
-                <template v-for="item in list" :key="item.key">
-                    <template v-if="!item.children">
-                        <a-menu-item :key="item.key">
-                            <template #icon>
-                                <HIcon :icon="item.icon" />
-                            </template>
-                            {{ item.title }}
-                        </a-menu-item>
+            <div class="header-spaces">
+                <a-dropdown placement="bottomCenter">
+                    <div class="space-item">
+                        <img
+                            src="@/assets/images/user.png"
+                            :style="{ width: '30px', height: '30px' }"
+                        />
+                        <span class="ml-2">Serati Ma</span>
+                    </div>
+                    <template #overlay>
+                        <a-menu>
+                            <a-menu-item>1st menu item</a-menu-item>
+                            <a-menu-item>1st menu item</a-menu-item>
+                            <a-menu-divider />
+                            <a-menu-item>1st menu item</a-menu-item>
+                        </a-menu>
                     </template>
-                    <template v-else>
-                        <SubMenu :menu-info="item" />
-                    </template>
-                </template>
-            </a-menu>
-        </a-layout-sider>
-        <a-layout :style="{ marginLeft: collapsed ? '80px' : '200px' }">
-            <a-layout-header
-                style="background: #fff; padding: 0"
-                :style="{ position: 'fixed', top: 0, right: 0, left: collapsed ? '80px' : '200px' }"
+                </a-dropdown>
+            </div>
+        </a-layout-header>
+        <a-layout>
+            <a-layout-sider
+                :style="{ width: '200px', height: '100vh', position: 'fixed', zIndex: 1, overflow: 'auto', paddingTop: '64px' }"
+                v-model:collapsed="collapsed"
+                collapsible
+                theme="light"
             >
-                <menu-unfold-outlined
-                    v-if="collapsed"
-                    class="trigger"
-                    @click="() => (collapsed = !collapsed)"
-                />
-                <menu-fold-outlined v-else class="trigger" @click="() => (collapsed = !collapsed)" />
-            </a-layout-header>
-            <a-layout-content :style="{ marginTop: '64px', overflow: 'initial' }">
+                <a-menu
+                    v-model:selectedKeys="selectedKeys"
+                    v-model:openKeys="openKeys"
+                    mode="inline"
+                    @click="handleClick"
+                    :style="{ height: '100%', borderRight: 0 }"
+                >
+                    <template v-for="item in list" :key="item.key">
+                        <template v-if="!item.children">
+                            <a-menu-item :key="item.key">
+                                <template #icon>
+                                    <HIcon :icon="item.icon" />
+                                </template>
+                                {{ item.title }}
+                            </a-menu-item>
+                        </template>
+                        <template v-else>
+                            <SubMenu :menu-info="item" />
+                        </template>
+                    </template>
+                </a-menu>
+            </a-layout-sider>
+            <a-layout
+                style="padding: 0 24px 24px; margin-top: 64px;"
+                :style="{ marginLeft: collapsed ? '80px' : '200px' }"
+            >
                 <router-view v-slot="{ Component, route }">
                     <keep-alive>
                         <component :is="Component" v-if="route.meta.keepAlive"></component>
                     </keep-alive>
                     <component :is="Component" v-if="!route.meta.keepAlive"></component>
                 </router-view>
-            </a-layout-content>
-            <a-layout-footer :style="{ textAlign: 'center' }">Ant Design ©2018 Created by Ant UED</a-layout-footer>
+                <a-layout-footer
+                    :style="{ textAlign: 'center' }"
+                >Ant Design ©2018 Created by Ant UED</a-layout-footer>
+            </a-layout>
         </a-layout>
     </a-layout>
 </template>
 <script lang="ts" setup>
-import { onMounted, reactive, toRefs } from "vue"
+import { onMounted, reactive, toRefs, watch } from "vue"
 import SubMenu from '@/components/SubMenu.vue'
 import {
     PieChartOutlined,
-    MenuUnfoldOutlined,
-    MenuFoldOutlined,
 } from '@ant-design/icons-vue';
 import { useRouter } from 'vue-router'
 import _ from 'lodash'
+import { useWindowResize } from "@/hooks"
+const { width, height } = useWindowResize()
 const router = useRouter()
 
 
@@ -83,7 +98,7 @@ const findActiveRouter = (key: String, menus: any[], parentMenu: any, toPage: bo
                     // console.log(data.selectedKeys);
                 }
             } else {
-                router.replace({ name: menu.key })
+                router.push({ name: menu.key })
             }
             break
         }
@@ -97,8 +112,13 @@ const findActiveRouter = (key: String, menus: any[], parentMenu: any, toPage: bo
 
 
 onMounted(async () => {
+    router.afterEach((to) => {
+        findActiveRouter(to.name as string, data.list, null, false)
+    })
     findActiveRouter(router.currentRoute.value.name as string, data.list, null, false)
 })
+
+
 
 interface Data {
     list: any[],
@@ -136,29 +156,45 @@ const data: Data = reactive({
     selectedKeys: [],
     collapsed: false,
 })
+
+watch(
+    () => width.value,
+    (numNew, numOld) => {
+        data.collapsed = numNew > 768 ? false : true
+    },
+    { immediate: true }
+)
+
+
 const { list, openKeys, selectedKeys, collapsed } = { ...toRefs(data) }
 </script>
 <style lang="less" scoped>
-.trigger {
-    font-size: 18px;
-    line-height: 64px;
-    padding: 0 24px;
-    cursor: pointer;
-    transition: color 0.3s;
-}
-
-.trigger:hover {
-    color: #1890ff;
-}
-
 .logo {
-    height: 32px;
+    float: left;
+    width: 120px;
+    height: 31px;
+    margin: 16px 24px 16px 40px;
     background: rgba(255, 255, 255, 0.3);
-    margin: 16px;
 }
 
-.ant-layout-sider,
-.ant-layout-header {
-    z-index: 10;
+.header-spaces {
+    float: right;
+
+    .space-item {
+        display: flex;
+        align-items: center;
+        height: 64px;
+        padding: 12px;
+        color: #fff;
+        cursor: pointer;
+    }
+}
+
+.site-layout-background {
+    background: #fff;
+}
+
+/deep/ .ant-layout-sider-trigger {
+    border-top: 1px solid rgba(0, 0, 0, 0.06) !important;
 }
 </style>

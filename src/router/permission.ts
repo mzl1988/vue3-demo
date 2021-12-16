@@ -2,7 +2,7 @@ import storage from 'store'
 import NProgress from 'nprogress'
 import router from '@/router'
 import { useUserStore } from '@/stores/user'
-import { setTitle } from '@/libs/utils'
+import { setTitle } from '@/commons'
 import { Result } from '@/models'
 
 // 进度条

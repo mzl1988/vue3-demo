@@ -1,7 +1,7 @@
 import { ref } from 'vue';
 import screenfull from 'screenfull';
 
-export default function useFullscreen() {
+export const useFullscreen = () => {
   const screenfullActive = ref(false);
 
   function toggleScreenfull() {
