@@ -1,6 +1,4 @@
-import StaticFile from '@/components/StaticFile.vue';
-import SvgIcon from '@/components/SvgIcon.vue';
+import HIcon from '@/components/HIcon.vue';
 
-export const components = [StaticFile, SvgIcon];
-
+export const components = [HIcon];
 export const plugins = [];

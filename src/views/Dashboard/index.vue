@@ -10,6 +10,5 @@
   <div class="mt-4">
     <a-input placeholder="Basic usage" />
   </div>
-  <svg-icon name="color" color="red" />
   <img src="@/assets/images/cat.jpg" />
 </template>

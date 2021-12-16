@@ -23,7 +23,6 @@
 import {
     UserOutlined
 } from '@ant-design/icons-vue';
-import HIcon from '@/components/HIcon.vue';
 const props = defineProps({
     menuInfo: {
         type: Object,

@@ -56,7 +56,6 @@
 <script lang="ts" setup>
 import { onMounted, reactive, toRefs } from "vue"
 import SubMenu from '@/components/SubMenu.vue'
-import HIcon from '@/components/HIcon.vue'
 import {
     PieChartOutlined,
     MenuUnfoldOutlined,

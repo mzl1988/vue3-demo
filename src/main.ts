@@ -1,10 +1,9 @@
-import { createApp, h } from 'vue';
+import { createApp} from 'vue';
 import { components, plugins } from './components';
 import App from './App.vue';
 import store from './stores';
 import router from './router';
 import '@/router/permission';
-import 'virtual:svg-icons-register';
 
 // css
 import '@/styles/tailwind.css';

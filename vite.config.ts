@@ -1,21 +1,16 @@
-import { defineConfig, loadEnv } from 'vite';
-import vue from '@vitejs/plugin-vue';
-import Components from 'unplugin-vue-components/vite';
-import viteSvgIcons from 'vite-plugin-svg-icons';
-import { AntDesignVueResolver } from 'unplugin-vue-components/resolvers';
-import viteCompression from 'vite-plugin-compression';
+import { defineConfig, loadEnv } from 'vite'
+import vue from '@vitejs/plugin-vue'
+import Components from 'unplugin-vue-components/vite'
+import { AntDesignVueResolver } from 'unplugin-vue-components/resolvers'
+import viteCompression from 'vite-plugin-compression'
 
-import { resolve } from 'path';
+import { resolve } from 'path'
 
 export default ({ mode }) => {
   return defineConfig({
     plugins: [
       vue(),
       viteCompression(),
-      viteSvgIcons({
-        iconDirs: [resolve(process.cwd(), 'src/assets/icons')],
-        symbolId: 'icon-[dir]-[name]',
-      }),
       Components({
         resolvers: [AntDesignVueResolver()],
       }),
@@ -24,7 +19,7 @@ export default ({ mode }) => {
     //   //* 预编译支持less
     //   preprocessorOptions: {
     //     less: {
-    //       additionalData: '@import "./src/styles/variables.less";',
+    //       additionalData: '@import "./src/styles/variables.less"',
     //     },
     //   },
     // },
@@ -39,5 +34,5 @@ export default ({ mode }) => {
       open: true,
       cors: true,
     },
-  });
-};
+  })
+}
