@@ -2,7 +2,7 @@ import storage from 'store'
 import NProgress from 'nprogress'
 import router from '@/router'
 import { useUserStore } from '@/stores/user'
-import { setTitle } from '@/commons'
+import { setTitle, firebaseSetCurrentScreen } from '@/commons'
 import { Result } from '@/models'
 
 // 进度条
@@ -52,6 +52,9 @@ router.beforeEach(async (to, from, next) => {
 })
 
 router.afterEach((to) => {
+  console.log('11111111');
+  
+  firebaseSetCurrentScreen(to.meta.pageName as string)
   // 进度条
   NProgress.done()
   setTitle(to.meta.title as string)

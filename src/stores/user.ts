@@ -3,6 +3,7 @@ import storage from 'store'
 import router from '@/router'
 import UaParser, { IResult as UaResult } from 'ua-parser-js'
 import { UserInfo, UserInfoProxy, Result } from '@/models'
+import {firebaseSetUserId} from '@/commons'
 
 export interface UserState {
   userInfo: UserInfo
@@ -27,6 +28,7 @@ export const useUserStore = defineStore({
   actions: {
     setUserInfo(payload: UserInfo) {
       this.userInfo = payload
+      firebaseSetUserId('123456')
       storage.set('USER_ID', payload.id)
       storage.set('ACCESS_TOKEN', payload.token)
     },

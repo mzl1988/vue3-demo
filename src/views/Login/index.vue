@@ -40,6 +40,8 @@ import { UserOutlined, LockOutlined } from '@ant-design/icons-vue'
 import { reactive, ref, toRefs } from 'vue'
 import type { FormProps } from 'ant-design-vue'
 import { useUserStore } from '@/stores/user'
+import { firebaseLogEvent } from '@/commons'
+
 const userStore = useUserStore()
 
 const formRef = ref();
@@ -55,6 +57,7 @@ interface FormState {
 }
 
 const handleFinish: FormProps['onFinish'] = values => {
+  firebaseLogEvent('btn_login')
   userStore.login({
     id: formState.userId,
     token: '123456',

@@ -17,6 +17,7 @@ export const frameIn: Array<RouteRecordRaw> = [
         component: () => import('@/views/Dashboard/index.vue'),
         meta: {
           title: 'Dashboard',
+          pageName: 'dashboard_page'
         },
       },
       {
@@ -25,6 +26,7 @@ export const frameIn: Array<RouteRecordRaw> = [
         component: () => import('@/views/TermsAndConditions/index.vue'),
         meta: {
           title: 'TermsAndConditions',
+          pageName: 'terms_and_conditions_page'
           // keepAlive: true,
         },
       },
@@ -39,7 +41,8 @@ const frameOut = [
     name: 'Login',
     component: () => import('@/views/Login/index.vue'),
     meta: {
-      title: '登录',
+      title: 'Login',
+      pageName: 'login_page'
     },
   },
 ];
@@ -49,6 +52,9 @@ const errorPage = [
     path: '/:pathMatch(.*)*',
     name: 'NotFound',
     component: () => import('@/views/error/404.vue'),
+    meta: {
+      pageName: 'not_found_page'
+    },
   },
 ];
 
