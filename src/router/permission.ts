@@ -28,7 +28,7 @@ router.beforeEach(async (to, from, next) => {
       const res: Result<any> = await userStore
         .verification(token)
       if (res.code !== 0) {
-        next({ name: 'Login' })
+        next({ name: 'login_page' })
       } else if (res.code = 0 && to.path === loginRoutePath) {
         next({ path: defaultRoutePath })
       } else {
@@ -38,7 +38,7 @@ router.beforeEach(async (to, from, next) => {
       // 没有登录的时候跳转到登录界面
       // 携带上登录成功之后需要跳转的页面完整路径
       next({
-        name: 'Login',
+        name: 'login_page',
         query: {
           redirect: to.fullPath,
         },
@@ -52,9 +52,8 @@ router.beforeEach(async (to, from, next) => {
 })
 
 router.afterEach((to) => {
-  console.log('11111111');
   
-  firebaseSetCurrentScreen(to.meta.pageName as string)
+  firebaseSetCurrentScreen(to.name as string)
   // 进度条
   NProgress.done()
   setTitle(to.meta.title as string)

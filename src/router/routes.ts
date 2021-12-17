@@ -13,20 +13,18 @@ export const frameIn: Array<RouteRecordRaw> = [
     children: [
       {
         path: 'dashboard',
-        name: 'Dashboard',
+        name: 'dashboard_page',
         component: () => import('@/views/Dashboard/index.vue'),
         meta: {
           title: 'Dashboard',
-          pageName: 'dashboard_page'
         },
       },
       {
-        path: 'TermsAndConditions',
-        name: 'TermsAndConditions',
+        path: 'termsAndConditions',
+        name: 'terms_and_conditions_page',
         component: () => import('@/views/TermsAndConditions/index.vue'),
         meta: {
           title: 'TermsAndConditions',
-          pageName: 'terms_and_conditions_page'
           // keepAlive: true,
         },
       },
@@ -38,11 +36,10 @@ export const frameIn: Array<RouteRecordRaw> = [
 const frameOut = [
   {
     path: '/login',
-    name: 'Login',
+    name: 'login_page',
     component: () => import('@/views/Login/index.vue'),
     meta: {
       title: 'Login',
-      pageName: 'login_page'
     },
   },
 ];
@@ -50,11 +47,8 @@ const frameOut = [
 const errorPage = [
   {
     path: '/:pathMatch(.*)*',
-    name: 'NotFound',
+    name: 'not_found_page',
     component: () => import('@/views/error/404.vue'),
-    meta: {
-      pageName: 'not_found_page'
-    },
   },
 ];
 

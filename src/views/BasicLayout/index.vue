@@ -1,8 +1,21 @@
 <template>
     <a-layout>
-        <a-layout-header :style="{ position: 'fixed', zIndex: 2, width: '100%', padding: 0 }">
-            <div class="logo" />
-            <div class="header-spaces">
+        <a-layout-header
+            :style="{ position: 'fixed', zIndex: 2, width: '100%', padding: 0 }"
+            class="flex flex-row items-center"
+        >
+            <img src="@/assets/images/logo.png" width="30" class="mx-4" />
+            <span v-if="screens !== 'sm'" class="text-white text-xl">Ant Design Pro</span>
+            <template v-if="screens === 'sm'">
+                <MenuUnfoldOutlined
+                    v-if="opened"
+                    class="trigger"
+                    @click="() => (opened = !opened)"
+                />
+                <MenuFoldOutlined v-if="!opened" class="trigger" @click="() => (opened = !opened)" />
+            </template>
+
+            <div class="flex-1 flex flex-row justify-end">
                 <a-dropdown placement="bottomCenter">
                     <div class="space-item">
                         <img
@@ -11,6 +24,7 @@
                         />
                         <span class="ml-2">Serati Ma</span>
                     </div>
+
                     <template #overlay>
                         <a-menu>
                             <a-menu-item>1st menu item</a-menu-item>
@@ -26,7 +40,13 @@
             </div>
         </a-layout-header>
         <a-layout>
-            <a-layout-sider v-model:collapsed="collapsed" collapsible theme="light" width="240">
+            <a-layout-sider
+                v-if="screens !== 'sm'"
+                v-model:collapsed="collapsed"
+                collapsible
+                theme="light"
+                :width="siderWidth"
+            >
                 <a-menu
                     v-model:selectedKeys="selectedKeys"
                     v-model:openKeys="openKeys"
@@ -51,7 +71,7 @@
             </a-layout-sider>
             <a-layout
                 style="padding: 0 24px 24px; margin-top: 64px;"
-                :style="{ marginLeft: collapsed ? '80px' : '240px' }"
+                :style="{ marginLeft: screens === 'sm' ? '0' : collapsed ? '80px' : siderWidth + 'px' }"
             >
                 <router-view v-slot="{ Component, route }">
                     <keep-alive>
@@ -65,13 +85,44 @@
             </a-layout>
         </a-layout>
     </a-layout>
+    <a-drawer
+        :width="siderWidth"
+        :bodyStyle="{ padding: 0 }"
+        :visible="opened"
+        :closable="closable"
+        placement="left"
+        @close="onClose"
+    >
+        <a-menu
+            v-model:selectedKeys="selectedKeys"
+            v-model:openKeys="openKeys"
+            mode="inline"
+            @click="handleClick"
+        >
+            <template v-for="item in list" :key="item.key">
+                <template v-if="!item.children">
+                    <a-menu-item :key="item.key">
+                        <template #icon>
+                            <HIcon :icon="item.icon" />
+                        </template>
+                        {{ item.title }}
+                    </a-menu-item>
+                </template>
+                <template v-else>
+                    <SubMenu :menu-info="item" />
+                </template>
+            </template>
+        </a-menu>
+    </a-drawer>
 </template>
 <script lang="ts" setup>
 import { onMounted, reactive, toRefs, watch } from "vue"
 import SubMenu from '@/components/SubMenu.vue'
 import {
     PieChartOutlined,
-    LogoutOutlined
+    LogoutOutlined,
+    MenuFoldOutlined,
+    MenuUnfoldOutlined
 } from '@ant-design/icons-vue';
 import { useRouter } from 'vue-router'
 import _ from 'lodash'
@@ -79,7 +130,12 @@ import { useWindowResize } from "@/hooks"
 const { width } = useWindowResize()
 const router = useRouter()
 import { useUserStore } from '@/stores/user'
+import { ItemGroup } from "ant-design-vue/lib/menu";
 const userStore = useUserStore()
+
+const onClose = () => {
+    data.opened = false;
+};
 
 const signOut = () => {
     userStore.logout()
@@ -124,21 +180,27 @@ onMounted(async () => {
 
 
 interface Data {
+    screens: string,
+    siderWidth: number,
     list: any[],
     openKeys: string[],
     selectedKeys: string[],
     collapsed: boolean,
+    opened: boolean,
+    closable: boolean,
 }
 
 const data: Data = reactive({
+    screens: 'lg',
+    siderWidth: 220,
     list: [
         {
-            key: 'Dashboard',
+            key: 'dashboard_page',
             title: 'Dashboard',
             icon: PieChartOutlined,
         },
         {
-            key: 'TermsAndConditions',
+            key: 'terms_and_conditions_page',
             title: 'Terms And Conditions',
             icon: PieChartOutlined,
         },
@@ -158,20 +220,41 @@ const data: Data = reactive({
     openKeys: [],
     selectedKeys: [],
     collapsed: false,
+    opened: false,
+    closable: false,
 })
 
 watch(
     () => width.value,
     (numNew, numOld) => {
-        data.collapsed = numNew > 768 ? false : true
+        if (numNew <= 768) {
+            data.screens = 'sm'
+            data.collapsed = true
+        } else if (numNew < 988) {
+            data.screens = 'md'
+            data.collapsed = true
+        } else {
+            data.screens = 'lg'
+            data.collapsed = false
+        }
     },
     { immediate: true }
 )
 
 
-const { list, openKeys, selectedKeys, collapsed } = { ...toRefs(data) }
+const { screens, siderWidth, list, openKeys, selectedKeys, collapsed, opened, closable } = { ...toRefs(data) }
 </script>
 <style lang="less" scoped>
+.trigger {
+    font-size: 18px;
+    cursor: pointer;
+    transition: color 0.3s;
+    color: #ffffff;
+}
+.trigger:hover {
+    color: #1890ff;
+}
+
 .logo {
     float: left;
     width: 120px;
@@ -180,17 +263,13 @@ const { list, openKeys, selectedKeys, collapsed } = { ...toRefs(data) }
     background: rgba(255, 255, 255, 0.3);
 }
 
-.header-spaces {
-    float: right;
-
-    .space-item {
-        display: flex;
-        align-items: center;
-        height: 64px;
-        padding: 12px;
-        color: #fff;
-        cursor: pointer;
-    }
+.space-item {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    padding: 0 12px;
+    color: #fff;
+    cursor: pointer;
 }
 
 .site-layout-background {

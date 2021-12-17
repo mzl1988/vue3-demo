@@ -50,7 +50,7 @@ export const useUserStore = defineStore({
       // 调用退出登陆接口
       storage.clearAll()
       this.resetUserInfo()
-      router.replace({ name: 'Login' })
+      router.replace({ name: 'login_page' })
     },
     async verification(token: string): Promise<Result<any>> {
       // 调用 token 验证接口
